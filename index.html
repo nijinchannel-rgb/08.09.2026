@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>💜 У нас скоро дата</title>
+    <style>
+        :root {
+            --lavender-bg: #e6dcf0;
+            --lavender-deep: #c9b8db;
+            --lavender-light: #f0e8f5;
+            --text-dark: #3a2e4f;
+            --text-muted: #7a6a90;
+            --white: #ffffff;
+            --card-width: min(88vw, 348px);
+            --card-height: min(72dvh, 535px);
+            --btn-size: 72px;
+            --corner-radius: 28px;
+            --shadow-offset: 10px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+        }
+
+        body {
+            width: 100%;
+            min-height: 100vh;
+            min-height: 100dvh;
+            background: linear-gradient(170deg, #e6dcf0 0%, #ece3f5 25%, #e2d8ec 50%, #e9dff3 75%, #e4d8ee 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', 'Segoe UI', Roboto, sans-serif;
+            overflow: hidden;
+            position: relative;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation;
+        }
+
+        .floating-hearts {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .float-heart {
+            position: absolute;
+            font-size: 18px;
+            opacity: 0;
+            animation: floatHeart 6s ease-in-out infinite;
+            will-change: transform, opacity;
+            line-height: 1;
+        }
+
+        @keyframes floatHeart {
+            0% { opacity: 0; transform: translateY(0) rotate(0deg) scale(0.5); }
+            15% { opacity: 0.7; transform: translateY(-18px) rotate(8deg) scale(1); }
+            50% { opacity: 0.4; transform: translateY(-40px) rotate(-5deg) scale(0.9); }
+            85% { opacity: 0.55; transform: translateY(-60px) rotate(4deg) scale(0.95); }
+            100% { opacity: 0; transform: translateY(-80px) rotate(0deg) scale(0.6); }
+        }
+
+        .page {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            min-height: 100dvh;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            opacity: 1;
+        }
+
+        .page.hidden {
+            opacity: 0;
+            pointer-events: none;
+            position: absolute;
+            transform: scale(0.95);
+        }
+
+        .card-wrapper {
+            position: relative;
+            width: var(--card-width);
+            height: var(--card-height);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+
+        .card-wrapper.visible {
+            opacity: 1;
+        }
+
+        .card-shadow-plate {
+            position: absolute;
+            inset: calc(-1 * var(--shadow-offset));
+            background: #b89ad5;
+            border-radius: calc(var(--corner-radius) + var(--shadow-offset));
+            z-index: 0;
+            box-shadow: none;
+        }
+
+        .card-bg {
+            position: absolute;
+            inset: 0;
+            background: var(--white);
+            border-radius: var(--corner-radius);
+            border: 1px solid rgba(170, 139, 197, 0.28);
+            z-index: 1;
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-evenly;
+            padding: clamp(20px, 3.5vh, 28px) clamp(18px, 5vw, 28px) clamp(16px, 3vh, 22px);
+            text-align: center;
+            overflow: hidden;
+            border-radius: var(--corner-radius);
+        }
+
+        .card-top {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: clamp(2px, 0.5vh, 4px);
+        }
+
+        .animated-heart {
+            font-size: clamp(46px, 9vw, 64px);
+            line-height: 1;
+            animation: heartBeat 1.8s ease-in-out infinite;
+            filter: drop-shadow(0 4px 14px rgba(180, 145, 212, 0.5));
+            transform-origin: center;
+            will-change: transform;
+            display: inline-block;
+            margin-bottom: 2px;
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            14% { transform: scale(1.12); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.08); }
+            56% { transform: scale(1); }
+            70% { transform: scale(1.04); }
+            84% { transform: scale(1); }
+        }
+
+        .card-title {
+            font-size: clamp(20px, 5.5vw, 26px);
+            font-weight: 700;
+            color: var(--text-dark);
+            letter-spacing: -0.4px;
+            line-height: 1.25;
+            margin: 0;
+        }
+
+        .info-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            width: 100%;
+            max-width: 280px;
+            margin: 0;
+        }
+
+        .info-line {
+            font-size: clamp(13px, 3.4vw, 15px);
+            font-weight: 500;
+            color: var(--text-muted);
+            letter-spacing: 0.2px;
+            line-height: 1.4;
+        }
+
+        .info-divider {
+            font-size: 14px;
+            color: var(--lavender-deep);
+            opacity: 0.6;
+            letter-spacing: 0;
+            line-height: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            width: 100%;
+            text-align: center;
+            font-weight: 400;
+            font-family: monospace;
+        }
+
+        .timer-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: clamp(2px, 0.5vh, 4px);
+            width: 100%;
+            max-width: 280px;
+        }
+
+        .timer-grid {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: clamp(4px, 1.2vw, 8px);
+        }
+
+        .timer-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: var(--lavender-light);
+            border-radius: 14px;
+            padding: clamp(8px, 1.6vh, 12px) clamp(8px, 2.5vw, 14px);
+            min-width: clamp(48px, 13vw, 56px);
+            border: 1px solid rgba(200, 175, 215, 0.3);
+            transition: all 0.25s ease;
+        }
+
+        .timer-value {
+            font-size: clamp(20px, 5vw, 24px);
+            font-weight: 700;
+            color: var(--text-dark);
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .timer-unit {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-muted);
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            margin-top: 2px;
+        }
+
+        .timer-separator {
+            font-size: clamp(20px, 5vw, 24px);
+            font-weight: 700;
+            color: var(--lavender-deep);
+            opacity: 0.6;
+            padding-bottom: 10px;
+            animation: separatorPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes separatorPulse {
+            0%, 100% { opacity: 0.45; }
+            50% { opacity: 0.8; }
+        }
+
+        .card-bottom {
+            width: 100%;
+            max-width: 260px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .btn-info {
+            width: var(--btn-size);
+            height: var(--btn-size);
+            border: 2px solid rgba(200, 175, 215, 0.5);
+            outline: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 38px;
+            line-height: 1;
+            border-radius: 50%;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            background: #e0d5e8;
+            color: #9a8aae;
+            box-shadow: none;
+            pointer-events: none;
+            opacity: 0.85;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+
+        .btn-info.active {
+            background: linear-gradient(135deg, #b491d4, #a582c0);
+            color: #ffffff;
+            box-shadow: 0 6px 20px rgba(180, 145, 212, 0.45);
+            pointer-events: auto;
+            opacity: 1;
+            cursor: pointer;
+            border-color: #b491d4;
+        }
+
+        .btn-info.active:hover {
+            background: linear-gradient(135deg, #c0a0dd, #b08ecb);
+            box-shadow: 0 8px 28px rgba(180, 145, 212, 0.55);
+            transform: translateY(-2px);
+        }
+
+        .btn-info.active:active {
+            transform: scale(0.9);
+            box-shadow: 0 3px 12px rgba(180, 145, 212, 0.35);
+        }
+
+        .btn-info .lock-symbol {
+            display: block;
+            transition: transform 0.2s ease;
+            font-size: inherit;
+            line-height: 1;
+        }
+
+        .star-deco {
+            position: absolute;
+            pointer-events: none;
+            z-index: 0;
+            color: rgba(150, 105, 187, 0.5);
+            font-size: 22px;
+            animation: twinkle 2.5s ease-in-out infinite;
+        }
+
+        .star-deco::before {
+            content: "✦";
+        }
+
+        .star-deco.small { font-size: 16px; }
+        .star-deco.large { font-size: 30px; }
+        .star-deco.delay1 { animation-delay: 0.3s; }
+        .star-deco.delay2 { animation-delay: 0.8s; }
+        .star-deco.delay3 { animation-delay: 1.5s; }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1) rotate(0deg); }
+            50% { opacity: 0.9; transform: scale(1.3) rotate(25deg); }
+        }
+
+        .watercolor-blob {
+            position: absolute;
+            pointer-events: none;
+            z-index: 0;
+            filter: blur(15px);
+            mix-blend-mode: multiply;
+            opacity: 0.5;
+            border-radius: 50%;
+        }
+
+        .page-two .blob-a { width: 110px; height: 90px; background: rgba(170, 111, 215, 0.6); top: 8%; left: 5%; }
+        .page-two .blob-b { width: 130px; height: 100px; background: rgba(255, 117, 181, 0.5); bottom: 10%; right: 3%; }
+        .page-two .blob-c { width: 100px; height: 80px; background: rgba(145, 170, 255, 0.45); top: 20%; right: 15%; }
+        .page-two .blob-d { width: 120px; height: 95px; background: rgba(255, 204, 128, 0.4); bottom: 25%; left: 12%; }
+        .page-two .blob-e { width: 140px; height: 110px; background: rgba(200, 150, 220, 0.5); top: 45%; left: 55%; transform: translate(-50%, -50%); }
+
+        .page-three .blob-a { width: 130px; height: 100px; background: rgba(190, 130, 220, 0.6); top: 12%; left: 20%; }
+        .page-three .blob-b { width: 150px; height: 120px; background: rgba(255, 140, 190, 0.5); bottom: 15%; right: 20%; }
+        .page-three .blob-c { width: 110px; height: 90px; background: rgba(160, 180, 255, 0.45); top: 35%; left: 10%; }
+        .page-three .blob-d { width: 140px; height: 110px; background: rgba(255, 215, 150, 0.4); bottom: 30%; right: 10%; }
+        .page-three .blob-e { width: 160px; height: 130px; background: rgba(210, 160, 230, 0.5); top: 50%; left: 50%; transform: translate(-50%, -50%); }
+
+        .page-decoration {
+            position: absolute;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .sparkle-cluster {
+            width: 92px;
+            height: 92px;
+            border: 1px solid rgba(166, 124, 197, 0.25);
+            border-radius: 48% 52% 58% 42%;
+            transform: rotate(16deg);
+        }
+
+        .page-two .sparkle-cluster::before,
+        .page-two .sparkle-cluster::after {
+            content: "✦";
+            position: absolute;
+            color: rgba(150, 105, 187, 0.62);
+            font-size: 18px;
+        }
+        .page-two .sparkle-cluster::before { top: 8px; right: 10px; }
+        .page-two .sparkle-cluster::after { bottom: 7px; left: 12px; font-size: 11px; }
+
+        .page-two .sparkle-cluster {
+            top: 9%;
+            right: 7%;
+        }
+
+        .page-three .sparkle-cluster {
+            bottom: 11%;
+            left: 7%;
+            transform: rotate(-18deg);
+        }
+        .page-three .sparkle-cluster::before,
+        .page-three .sparkle-cluster::after {
+            content: none;
+        }
+
+        .mini-note {
+            width: min(235px, 76%);
+            padding: 13px 15px;
+            border-radius: 20px;
+            background: rgba(247, 241, 250, 0.82);
+            border: 1px solid rgba(182, 151, 205, 0.24);
+            box-shadow: 0 9px 24px rgba(103, 73, 128, 0.08);
+            backdrop-filter: blur(5px);
+            z-index: 1;
+        }
+
+        .mini-note-title {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.7px;
+            text-transform: uppercase;
+            color: #9a78b4;
+        }
+
+        .mini-note-text {
+            font-size: 13px;
+            line-height: 1.45;
+            color: var(--text-muted);
+        }
+
+        .page-one-watercolor {
+            position: absolute;
+            inset: 6% 5%;
+            z-index: 0;
+            pointer-events: none;
+            border-radius: 46% 54% 51% 49% / 48% 43% 57% 52%;
+            background:
+                radial-gradient(ellipse at 18% 20%, rgba(181,145,212,.25) 0 12%, transparent 38%),
+                radial-gradient(ellipse at 82% 76%, rgba(255,171,207,.22) 0 10%, transparent 36%),
+                radial-gradient(ellipse at 52% 45%, rgba(174,198,255,.16) 0 8%, transparent 34%);
+            filter: blur(14px);
+        }
+
+        .page-dots {
+            position: fixed;
+            left: 50%;
+            bottom: max(18px, env(safe-area-inset-bottom));
+            transform: translateX(-50%);
+            z-index: 50;
+            display: flex;
+            gap: 9px;
+            padding: 9px 13px;
+            border-radius: 999px;
+            background: rgba(255,255,255,.48);
+            border: 1px solid rgba(255,255,255,.7);
+            box-shadow: 0 8px 24px rgba(80,55,105,.10);
+            backdrop-filter: blur(12px);
+        }
+
+        .page-dot {
+            width: 8px;
+            height: 8px;
+            border: 0;
+            padding: 0;
+            border-radius: 50%;
+            background: rgba(122,106,144,.30);
+            transition: transform .25s ease, background .25s ease;
+        }
+
+        .page-dot.active {
+            transform: scale(1.35);
+            background: #9f7ac0;
+        }
+
+        .page-two .card-content,
+        .page-three .card-content {
+            justify-content: center;
+            gap: 13px;
+            position: relative;
+        }
+
+        .page-two .card-top,
+        .page-three .card-top {
+            gap: 12px;
+            z-index: 1;
+        }
+
+        .page-two .animated-heart {
+            font-size: clamp(42px, 8vw, 56px);
+            animation: none;
+            filter: none;
+            transform: none;
+        }
+
+        .page-two .card-title {
+            font-size: clamp(18px, 4.2vw, 21px);
+            line-height: 1.4;
+            max-width: 280px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .page-two .btn-next {
+            border: none;
+            outline: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: clamp(15px, 4vw, 17px);
+            font-weight: 600;
+            letter-spacing: 0.4px;
+            padding: clamp(13px, 3vh, 16px) 28px;
+            border-radius: 16px;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            background: linear-gradient(135deg, #b491d4, #a582c0);
+            color: #ffffff;
+            box-shadow: 0 6px 20px rgba(180, 145, 212, 0.45);
+            cursor: pointer;
+            z-index: 1;
+        }
+
+        .page-two .btn-next:active {
+            transform: scale(0.94);
+            box-shadow: 0 3px 12px rgba(180, 145, 212, 0.35);
+        }
+
+        .page-two .btn-next:hover {
+            background: linear-gradient(135deg, #c0a0dd, #b08ecb);
+            box-shadow: 0 8px 28px rgba(180, 145, 212, 0.55);
+            transform: translateY(-2px);
+        }
+
+        .page-three .animated-heart {
+            font-size: clamp(50px, 10vw, 68px);
+            animation: heartBeat 1.8s ease-in-out infinite;
+            /* заменяем эмодзи через content? нет, лучше поменять в HTML */
+        }
+
+        .page-three .card-title {
+            font-size: clamp(16px, 3.8vw, 19px);
+            line-height: 1.5;
+            max-width: 290px;
+            margin: 0 auto;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .btn-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 70px;
+            width: 100%;
+            z-index: 1;
+        }
+
+        .page-three .btn-love {
+            border: none;
+            outline: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: clamp(16px, 4vw, 19px);
+            font-weight: 600;
+            letter-spacing: 0.4px;
+            padding: clamp(14px, 3vh, 18px) 30px;
+            border-radius: 16px;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            background: linear-gradient(135deg, #ff6b9d, #e84393);
+            color: #ffffff;
+            box-shadow: 0 6px 20px rgba(232, 67, 147, 0.45);
+            cursor: pointer;
+            position: relative;
+            z-index: 2;
+        }
+
+        .page-three .btn-love:active {
+            transform: scale(0.9);
+            box-shadow: 0 3px 12px rgba(232, 67, 147, 0.35);
+        }
+
+        .page-three .btn-love:hover {
+            background: linear-gradient(135deg, #ff85b3, #f0629e);
+            box-shadow: 0 8px 28px rgba(232, 67, 147, 0.55);
+            transform: translateY(-2px);
+        }
+
+        .love-result {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: clamp(17px, 4vw, 20px);
+            font-weight: 700;
+            color: #e84393;
+            letter-spacing: 0.2px;
+            line-height: 1.5;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            z-index: 1;
+            width: 100%;
+        }
+
+        .love-result.visible {
+            opacity: 1;
+            animation: fadeInUp 0.4s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translate(-50%, -40%); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
+        }
+
+        .flying-heart {
+            position: fixed;
+            z-index: 200;
+            pointer-events: none;
+            font-size: 18px;
+            animation: flyHeart 1.2s ease-out forwards;
+            will-change: transform, opacity;
+        }
+
+        @keyframes flyHeart {
+            0% { opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg); }
+            100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0.2) rotate(360deg); }
+        }
+
+        @media (max-width: 420px) {
+            :root {
+                --card-width: min(88vw, 330px);
+                --card-height: min(72vh, 480px);
+                --btn-size: 68px;
+                --corner-radius: 22px;
+                --shadow-offset: 8px;
+            }
+        }
+
+        @media (max-height: 650px) {
+            :root {
+                --card-height: min(74vh, 440px);
+                --btn-size: 60px;
+                --corner-radius: 18px;
+                --shadow-offset: 8px;
+            }
+            .card-content {
+                padding: 14px 14px 12px;
+                gap: 4px;
+            }
+            .animated-heart {
+                font-size: 40px;
+            }
+            .timer-block {
+                padding: 6px 7px;
+                min-width: 44px;
+                border-radius: 12px;
+            }
+            .timer-value {
+                font-size: 20px;
+            }
+        }
+
+        @supports (padding: env(safe-area-inset-top)) {
+            body {
+                padding-top: env(safe-area-inset-top);
+                padding-bottom: env(safe-area-inset-bottom);
+                padding-left: env(safe-area-inset-left);
+                padding-right: env(safe-area-inset-right);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="floating-hearts" id="floatingHearts"></div>
+
+    <!-- СТРАНИЦА 1 -->
+    <div class="page" id="page1">
+        <div class="card-wrapper visible" id="cardWrapper1">
+            <div class="card-shadow-plate" id="shadowPlate1"></div>
+            <div class="card-bg" id="cardBg1"></div>
+            <div class="card-content">
+                <div class="page-one-watercolor"></div>
+
+                <span class="star-deco" style="top: 8%; left: 6%;"></span>
+                <span class="star-deco small delay1" style="bottom: 12%; right: 8%;"></span>
+                <span class="star-deco large delay2" style="top: 45%; left: 4%; transform: translateY(-50%);"></span>
+
+                <div class="card-top">
+                    <span class="animated-heart">💜</span>
+                    <h1 class="card-title">у нас скоро<br>небольшая дата</h1>
+                </div>
+
+                <div class="info-block">
+                    <span class="info-line">я готовлю что‑то прикольное</span>
+                    <span class="info-divider">——————————————————</span>
+                    <span class="info-line">инфа будет после таймера</span> <!-- изменён текст -->
+                </div>
+
+                <div class="timer-section">
+                    <div class="timer-grid" id="timerGrid">
+                        <div class="timer-block">
+                            <span class="timer-value" id="timerHours">00</span>
+                            <span class="timer-unit">часов</span>
+                        </div>
+                        <span class="timer-separator">:</span>
+                        <div class="timer-block">
+                            <span class="timer-value" id="timerMinutes">00</span>
+                            <span class="timer-unit">минут</span>
+                        </div>
+                        <span class="timer-separator">:</span>
+                        <div class="timer-block">
+                            <span class="timer-value" id="timerSeconds">00</span>
+                            <span class="timer-unit">секунд</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-bottom">
+                    <button class="btn-info" id="btnInfo" type="button" disabled>
+                        <span class="lock-symbol">🔒</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- СТРАНИЦА 2 -->
+    <div class="page hidden" id="page2">
+        <div class="card-wrapper visible" id="cardWrapper2">
+            <div class="card-shadow-plate" id="shadowPlate2"></div>
+            <div class="card-bg" id="cardBg2"></div>
+            <div class="card-content page-two">
+                <div class="watercolor-blob blob-a"></div>
+                <div class="watercolor-blob blob-b"></div>
+                <div class="watercolor-blob blob-c"></div>
+                <div class="watercolor-blob blob-d"></div>
+                <div class="watercolor-blob blob-e"></div>
+
+                <span class="star-deco" style="top: 6%; left: 12%;"></span>
+                <span class="star-deco small delay1" style="bottom: 8%; right: 10%;"></span>
+                <span class="star-deco large delay2" style="top: 45%; right: 4%;"></span>
+
+                <div class="page-decoration sparkle-cluster"></div>
+
+                <div class="card-top">
+                    <span class="animated-heart">💗</span>
+                    <h1 class="card-title">тебе нужно написать мне твои варианты, какой у нас завтра мини-праздник</h1>
+                </div>
+
+                <div class="mini-note">
+                    <span class="mini-note-title">маленькая подсказка</span>
+                    <div class="mini-note-text">ответ может быть самым неочевидным (обычно, первая мысль, которая приходит в голову - верная) ♡</div>
+                </div>
+
+                <button class="btn-next" id="btnNext" type="button">А дальше...</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- СТРАНИЦА 3 -->
+    <div class="page hidden" id="page3">
+        <div class="card-wrapper visible" id="cardWrapper3">
+            <div class="card-shadow-plate" id="shadowPlate3"></div>
+            <div class="card-bg" id="cardBg3"></div>
+            <div class="card-content page-three">
+                <div class="watercolor-blob blob-a"></div>
+                <div class="watercolor-blob blob-b"></div>
+                <div class="watercolor-blob blob-c"></div>
+                <div class="watercolor-blob blob-d"></div>
+                <div class="watercolor-blob blob-e"></div>
+
+                <span class="star-deco" style="top: 8%; right: 15%;"></span>
+                <span class="star-deco small delay1" style="bottom: 10%; left: 12%;"></span>
+                <span class="star-deco large delay2" style="bottom: 12%; right: 8%;"></span>
+
+                <div class="page-decoration sparkle-cluster"></div>
+
+                <div class="card-top">
+                    <span class="animated-heart">💌</span> <!-- заменено -->
+                    <h1 class="card-title">я заберу тебя завтра после работы и все подготовлю (все будет дома, чтобы ты расслабилась и не переживала)</h1>
+                </div>
+
+                <div class="btn-container">
+                    <button class="btn-love" id="btnLove" type="button">я люблю тебя 🫶</button>
+                    <div class="love-result" id="loveResult">и я тебя люблю сильно сильно 💞</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            function generateFloatingHearts() {
+                const container = document.getElementById('floatingHearts');
+                const hearts = ['💜', '🤍', '💜', '💕', '✨', '💜', '🌸', '💜', '💜', '💕', '💜', '🤍', '💜', '✨', '💜', '🌸', '💕', '💜', '🤍', '💜', '💜', '🌸', '💜', '✨'];
+                const count = 55;
+                for (let i = 0; i < count; i++) {
+                    const span = document.createElement('span');
+                    span.className = 'float-heart';
+                    span.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+                    span.style.left = Math.random() * 96 + '%';
+                    span.style.top = Math.random() * 88 + '%';
+                    span.style.fontSize = (Math.random() * 10 + 12) + 'px';
+                    span.style.animationDelay = (Math.random() * 8) + 's';
+                    span.style.animationDuration = (Math.random() * 4 + 4) + 's';
+                    container.appendChild(span);
+                }
+            }
+            generateFloatingHearts();
+
+            const page1 = document.getElementById('page1');
+            const page2 = document.getElementById('page2');
+            const page3 = document.getElementById('page3');
+            const btnInfo = document.getElementById('btnInfo');
+            const btnNext = document.getElementById('btnNext');
+            const btnLove = document.getElementById('btnLove');
+            const loveResult = document.getElementById('loveResult');
+
+            function showPage(pageNumber) {
+                page1.classList.add('hidden');
+                page2.classList.add('hidden');
+                page3.classList.add('hidden');
+                if (pageNumber === 1) page1.classList.remove('hidden');
+                else if (pageNumber === 2) page2.classList.remove('hidden');
+                else if (pageNumber === 3) page3.classList.remove('hidden');
+            }
+
+            btnInfo.addEventListener('click', () => {
+                if (btnInfo.classList.contains('active')) showPage(2);
+            });
+
+            document.querySelectorAll('.page-dot').forEach(dot => {
+                dot.addEventListener('click', () => showPage(Number(dot.dataset.page)));
+            });
+
+            btnNext.addEventListener('click', () => showPage(3));
+
+            btnLove.addEventListener('click', function() {
+                const btnRect = btnLove.getBoundingClientRect();
+                const cx = btnRect.left + btnRect.width / 2;
+                const cy = btnRect.top + btnRect.height / 2;
+                const symbols = ['💜', '💗', '💖', '🩷', '❤️', '💕', '💞', '🫶', '💘', '❤️‍🔥', '✨', '💫', '🌟', '⭐️', '💥'];
+                for (let i = 0; i < 30; i++) {
+                    const particle = document.createElement('span');
+                    particle.className = 'flying-heart';
+                    particle.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                    particle.style.left = cx + 'px';
+                    particle.style.top = cy + 'px';
+                    particle.style.fontSize = (Math.random() * 18 + 12) + 'px';
+                    const angle = (Math.PI * 2 * i) / 30 + (Math.random() - 0.5) * 0.5;
+                    const distance = Math.random() * 150 + 70;
+                    const tx = Math.cos(angle) * distance;
+                    const ty = Math.sin(angle) * distance;
+                    particle.style.setProperty('--tx', tx + 'px');
+                    particle.style.setProperty('--ty', ty + 'px');
+                    particle.style.animationDuration = (Math.random() * 0.8 + 0.6) + 's';
+                    document.body.appendChild(particle);
+                    setTimeout(() => particle.remove(), 1500);
+                }
+                btnLove.style.display = 'none';
+                loveResult.classList.add('visible');
+                if (navigator.vibrate) navigator.vibrate([20, 40, 20]);
+            });
+
+            // Таймер до 08.09.2026 05:31 МСК
+            const targetDate = new Date('2026-09-07T15:00:00+03:00');
+            const timerHours = document.getElementById('timerHours');
+            const timerMinutes = document.getElementById('timerMinutes');
+            const timerSeconds = document.getElementById('timerSeconds');
+
+            function updateTimer() {
+                const now = new Date();
+                const diff = targetDate - now;
+                if (diff <= 0) {
+                    timerHours.textContent = '00';
+                    timerMinutes.textContent = '00';
+                    timerSeconds.textContent = '00';
+                    btnInfo.classList.add('active');
+                    btnInfo.disabled = false;
+                    btnInfo.innerHTML = '<span class="lock-symbol">🔓</span>';
+                    return;
+                }
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                timerHours.textContent = String(hours).padStart(2, '0');
+                timerMinutes.textContent = String(minutes).padStart(2, '0');
+                timerSeconds.textContent = String(seconds).padStart(2, '0');
+            }
+            updateTimer();
+            setInterval(updateTimer, 1000);
+
+            window.addEventListener('load', () => {
+                document.querySelectorAll('.card-wrapper').forEach(w => w.classList.add('visible'));
+            });
+        })();
+    </script>
+</body>
+</html>
